@@ -490,14 +490,7 @@ class _LoginPageState extends State<LoginPage>
                                   width: double.infinity,
                                   height: 52,
                                   child: ElevatedButton(
-                                    onPressed: () {
-                                      Navigator.pushReplacement(
-                                        context,
-                                        MaterialPageRoute(
-                                          builder: (_) => const HomeScreen(),
-                                        ),
-                                      );
-                                    },
+                                    onPressed: _login,
                                     style: ElevatedButton.styleFrom(
                                       backgroundColor: Theme.of(
                                         context,

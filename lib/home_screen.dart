@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:hydrosecure/profile_page.dart';
 import 'package:hydrosecure/theme.dart';
 import 'package:permission_handler/permission_handler.dart';
 import 'upload_reading_page.dart';
@@ -66,6 +67,19 @@ class _HomeScreenState extends State<HomeScreen> {
         title: const Text("HydroSecure"),
         backgroundColor: primaryColor,
         centerTitle: true,
+         actions: [
+    IconButton(
+      icon: const Icon(Icons.person, size: 28),
+      tooltip: 'Profile',
+      onPressed: () {
+        // Navigate to ProfilePage
+        Navigator.push(
+          context,
+          MaterialPageRoute(builder: (context) => const ProfilePage()),
+        );
+      },
+    ),
+  ],
       ),
       body: Padding(
         padding: const EdgeInsets.all(16.0),
