@@ -1,13 +1,13 @@
 {
   "project_info": {
-    "project_number": "748227224617",
-    "project_id": "hydro-3bb12",
-    "storage_bucket": "hydro-3bb12.firebasestorage.app"
+    "project_number": "160730817149",
+    "project_id": "hydro-fe128",
+    "storage_bucket": "hydro-fe128.firebasestorage.app"
   },
   "client": [
     {
       "client_info": {
-        "mobilesdk_app_id": "1:748227224617:android:623e9cb585a644a24ba838",
+        "mobilesdk_app_id": "1:160730817149:android:2e41c30f92cb9713bf0714",
         "android_client_info": {
           "package_name": "com.example.hydrosecure"
         }
@@ -15,7 +15,7 @@
       "oauth_client": [],
       "api_key": [
         {
-          "current_key": "AIzaSyBg9x7LeppFUZhowiNWXLLqPVsdrsjjQmg"
+          "current_key": "AIzaSyCmFTGhT1iKarnVvUMhCApksDy10l7DHas"
         }
       ],
       "services": {

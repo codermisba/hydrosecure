@@ -41,49 +41,48 @@ class DefaultFirebaseOptions {
   }
 
   static const FirebaseOptions web = FirebaseOptions(
-    apiKey: 'AIzaSyBd_0UIu-b_l7VCI03_WLkMEFlPOgkDM0Y',
-    appId: '1:748227224617:web:2cf03ab847e1482f4ba838',
-    messagingSenderId: '748227224617',
-    projectId: 'hydro-3bb12',
-    authDomain: 'hydro-3bb12.firebaseapp.com',
-    storageBucket: 'hydro-3bb12.firebasestorage.app',
-    measurementId: 'G-1D8C6VPHSQ',
+    apiKey: 'AIzaSyB2AWMRZFI6osCnPGHFn9NyQ7zr2NS9kYk',
+    appId: '1:160730817149:web:4542da068c41392abf0714',
+    messagingSenderId: '160730817149',
+    projectId: 'hydro-fe128',
+    authDomain: 'hydro-fe128.firebaseapp.com',
+    storageBucket: 'hydro-fe128.firebasestorage.app',
+    measurementId: 'G-L5EQKT7FRR',
   );
 
   static const FirebaseOptions android = FirebaseOptions(
-    apiKey: 'AIzaSyBg9x7LeppFUZhowiNWXLLqPVsdrsjjQmg',
-    appId: '1:748227224617:android:623e9cb585a644a24ba838',
-    messagingSenderId: '748227224617',
-    projectId: 'hydro-3bb12',
-    storageBucket: 'hydro-3bb12.firebasestorage.app',
+    apiKey: 'AIzaSyCmFTGhT1iKarnVvUMhCApksDy10l7DHas',
+    appId: '1:160730817149:android:2e41c30f92cb9713bf0714',
+    messagingSenderId: '160730817149',
+    projectId: 'hydro-fe128',
+    storageBucket: 'hydro-fe128.firebasestorage.app',
   );
 
   static const FirebaseOptions ios = FirebaseOptions(
-    apiKey: 'AIzaSyA7yxomSb4uPIr4NfJ6HfOQDMtpHnmBXcE',
-    appId: '1:748227224617:ios:e56613b1d38dbdb14ba838',
-    messagingSenderId: '748227224617',
-    projectId: 'hydro-3bb12',
-    storageBucket: 'hydro-3bb12.firebasestorage.app',
+    apiKey: 'AIzaSyC10Q6OSJkMAAwjJkLqPPJCS7xvoShbQZM',
+    appId: '1:160730817149:ios:5a52b842d4639228bf0714',
+    messagingSenderId: '160730817149',
+    projectId: 'hydro-fe128',
+    storageBucket: 'hydro-fe128.firebasestorage.app',
     iosBundleId: 'com.example.hydrosecure',
   );
 
   static const FirebaseOptions macos = FirebaseOptions(
-    apiKey: 'AIzaSyA7yxomSb4uPIr4NfJ6HfOQDMtpHnmBXcE',
-    appId: '1:748227224617:ios:e56613b1d38dbdb14ba838',
-    messagingSenderId: '748227224617',
-    projectId: 'hydro-3bb12',
-    storageBucket: 'hydro-3bb12.firebasestorage.app',
+    apiKey: 'AIzaSyC10Q6OSJkMAAwjJkLqPPJCS7xvoShbQZM',
+    appId: '1:160730817149:ios:5a52b842d4639228bf0714',
+    messagingSenderId: '160730817149',
+    projectId: 'hydro-fe128',
+    storageBucket: 'hydro-fe128.firebasestorage.app',
     iosBundleId: 'com.example.hydrosecure',
   );
 
   static const FirebaseOptions windows = FirebaseOptions(
-    apiKey: 'AIzaSyBd_0UIu-b_l7VCI03_WLkMEFlPOgkDM0Y',
-    appId: '1:748227224617:web:bf6e3972f448dafa4ba838',
-    messagingSenderId: '748227224617',
-    projectId: 'hydro-3bb12',
-    authDomain: 'hydro-3bb12.firebaseapp.com',
-    storageBucket: 'hydro-3bb12.firebasestorage.app',
-    measurementId: 'G-WRE7WV4DKC',
+    apiKey: 'AIzaSyB2AWMRZFI6osCnPGHFn9NyQ7zr2NS9kYk',
+    appId: '1:160730817149:web:f7d463c226178dd0bf0714',
+    messagingSenderId: '160730817149',
+    projectId: 'hydro-fe128',
+    authDomain: 'hydro-fe128.firebaseapp.com',
+    storageBucket: 'hydro-fe128.firebasestorage.app',
+    measurementId: 'G-ZLLS7G6HYY',
   );
-
 }
