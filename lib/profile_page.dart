@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:hydrosecure/theme.dart';
 import 'components.dart';
 
 class ProfilePage extends StatelessWidget {
@@ -25,6 +26,12 @@ class ProfilePage extends StatelessWidget {
 
     return Scaffold(
       backgroundColor: Theme.of(context).scaffoldBackgroundColor,
+     appBar: AppBar(
+        title: const Text("Profile"),
+        backgroundColor: primaryColor,
+        centerTitle: true,
+        elevation: 3,
+      ),
       body: FutureBuilder<QuerySnapshot>(
         future: FirebaseFirestore.instance
             .collection("users")
@@ -123,20 +130,91 @@ class ProfilePage extends StatelessWidget {
 
                           // Settings Section
                           Card(
-                            shape: RoundedRectangleBorder(
-                              borderRadius: BorderRadius.circular(12),
-                            ),
-                            elevation: 3,
-                            child: ListTile(
-                              leading: Icon(
-                                Icons.settings,
-                                color: Theme.of(context).primaryColor,
-                              ),
-                              title: Text("Settings"),
-                              trailing: const Icon(Icons.arrow_forward_ios),
-                              onTap: () {},
-                            ),
-                          ),
+  shape: RoundedRectangleBorder(
+    borderRadius: BorderRadius.circular(12),
+  ),
+  elevation: 3,
+  child: ListTile(
+    leading: Icon(
+      Icons.admin_panel_settings,
+      color: Theme.of(context).primaryColor,
+    ),
+    title: const Text("User Role"),
+    trailing: const Icon(Icons.arrow_forward_ios),
+    onTap: () {
+      // Show a dialog to select role
+      showDialog(
+        context: context,
+        builder: (context) {
+          String selectedRole = data['role'] ?? 'Public';
+          return AlertDialog(
+            title: const Text("Select User Role"),
+            content: Column(
+              mainAxisSize: MainAxisSize.min,
+              children: [
+                RadioListTile<String>(
+                  title: const Text("Supervisor"),
+                  value: "Supervisor",
+                  groupValue: selectedRole,
+                  onChanged: (value) {
+                    if (value != null) {
+                      selectedRole = value;
+                      FirebaseFirestore.instance
+                          .collection('users')
+                          .doc(snapshot.data!.docs.first.id)
+                          .update({'role': value});
+                      Navigator.pop(context);
+                      ScaffoldMessenger.of(context).showSnackBar(
+                        SnackBar(content: Text('Role updated to $value')),
+                      );
+                    }
+                  },
+                ),
+                RadioListTile<String>(
+                  title: const Text("Officer"),
+                  value: "Officer",
+                  groupValue: selectedRole,
+                  onChanged: (value) {
+                    if (value != null) {
+                      selectedRole = value;
+                      FirebaseFirestore.instance
+                          .collection('users')
+                          .doc(snapshot.data!.docs.first.id)
+                          .update({'role': value});
+                      Navigator.pop(context);
+                      ScaffoldMessenger.of(context).showSnackBar(
+                        SnackBar(content: Text('Role updated to $value')),
+                      );
+                    }
+                  },
+                ),
+                RadioListTile<String>(
+                  title: const Text("Public/Individual"),
+                  value: "Public",
+                  groupValue: selectedRole,
+                  onChanged: (value) {
+                    if (value != null) {
+                      selectedRole = value;
+                      FirebaseFirestore.instance
+                          .collection('users')
+                          .doc(snapshot.data!.docs.first.id)
+                          .update({'role': value});
+                      Navigator.pop(context);
+                      ScaffoldMessenger.of(context).showSnackBar(
+                        SnackBar(content: Text('Role updated to $value')),
+                      );
+                    }
+                  },
+                ),
+              ],
+            ),
+          );
+        },
+      );
+    },
+  ),
+),
+
                           const SizedBox(height: 16),
 
                          
