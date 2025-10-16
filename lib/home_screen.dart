@@ -4,7 +4,6 @@ import 'package:hydrosecure/profile_page.dart';
 import 'package:hydrosecure/river_details_screen.dart';
 import 'package:hydrosecure/theme.dart';
 import 'package:permission_handler/permission_handler.dart';
-import 'upload_reading_page.dart';
 import 'package:hydrosecure/river_map_screen.dart';
 
 class HomeScreen extends StatefulWidget {

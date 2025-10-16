@@ -20,7 +20,7 @@ class MyApp extends StatefulWidget {
   const MyApp({super.key});
 
   static void setLocale(BuildContext context, Locale newLocale) {
-    _MyAppState? state = context.findAncestorStateOfType<_MyAppState>();
+    context.findAncestorStateOfType<_MyAppState>();
     // state?.setLocale(newLocale);
   }
 
@@ -34,12 +34,10 @@ class MyApp extends StatefulWidget {
 }
 
 class _MyAppState extends State<MyApp> {
-  Locale? _locale;
   ThemeMode _themeMode = ThemeMode.system;
 
   void setLocale(Locale locale) {
     setState(() {
-      _locale = locale;
     });
   }
 
