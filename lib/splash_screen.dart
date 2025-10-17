@@ -1,5 +1,4 @@
-// ignore_for_file: library_private_types_in_public_api, use_build_context_synchronously
-
+// ignore_for_file: use_build_context_synchronously
 import 'package:flutter/material.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 
@@ -11,18 +10,25 @@ class SplashScreen extends StatefulWidget {
 }
 
 class _SplashScreenState extends State<SplashScreen> {
-  // final FirebaseAuth _auth = FirebaseAuth.instance;
-
   @override
   void initState() {
     super.initState();
-    Future.delayed(const Duration(seconds: 2), () {
-      User? user = FirebaseAuth.instance.currentUser;
+    _navigateNext();
+  }
+
+  Future<void> _navigateNext() async {
+    // Show splash screen for 2 seconds
+    await Future.delayed(const Duration(seconds: 2));
+
+    // Listen to auth state once
+    FirebaseAuth.instance.authStateChanges().first.then((User? user) {
       if (user != null) {
         Navigator.pushReplacementNamed(context, '/home');
       } else {
         Navigator.pushReplacementNamed(context, '/login');
       }
+    }).catchError((_) {
+      Navigator.pushReplacementNamed(context, '/login');
     });
   }
 
@@ -31,13 +37,22 @@ class _SplashScreenState extends State<SplashScreen> {
     return Scaffold(
       backgroundColor: Colors.white,
       body: Center(
-        child: Text(
-          "HydroSecure",
-          style: TextStyle(
-            fontSize: 36,
-            fontWeight: FontWeight.bold,
-            color: Theme.of(context).primaryColor,
-          ),
+        child: Column(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: [
+            Text(
+              "HydroSecure",
+              style: TextStyle(
+                fontSize: 36,
+                fontWeight: FontWeight.bold,
+                color: Theme.of(context).primaryColor,
+              ),
+            ),
+            const SizedBox(height: 20),
+            const CircularProgressIndicator(
+              color: Colors.blue,
+            ),
+          ],
         ),
       ),
     );
