@@ -58,6 +58,7 @@ class _RiverDetailScreenState extends State<RiverDetailScreen> {
 
   List<Map<String, String>> filteredStations = [];
   Map<String, String>? selectedStation;
+
   TextEditingController searchController = TextEditingController();
   TextEditingController stateController = TextEditingController();
   TextEditingController siteController = TextEditingController();
@@ -65,8 +66,7 @@ class _RiverDetailScreenState extends State<RiverDetailScreen> {
   TextEditingController lonController = TextEditingController();
 
   double? userLat, userLon, stationLat, stationLon, distance;
-  
-
+  bool _isValidating = false; // ✅ Progress flag
 
   @override
   void initState() {
@@ -130,64 +130,72 @@ class _RiverDetailScreenState extends State<RiverDetailScreen> {
   }
 
   Future<void> _validateLocation() async {
-    if (widget.riverName.toLowerCase() == "godavari" &&
-        selectedStation == null) {
-      _showMessage("Validation Failed", "Please select a gauge station.");
-      return;
-    }
+    setState(() => _isValidating = true); // ✅ Start loader
 
-    if (widget.riverName.toLowerCase() != "godavari") {
-      if (stateController.text.isEmpty ||
-          siteController.text.isEmpty ||
-          latController.text.isEmpty ||
-          lonController.text.isEmpty) {
-        _showMessage("Validation Failed",
-            "Please enter state, site name, latitude, and longitude.");
+    try {
+      if (widget.riverName.toLowerCase() == "godavari" &&
+          selectedStation == null) {
+        _showMessage("Validation Failed", "Please select a gauge station.");
         return;
       }
-      stationLat = double.tryParse(latController.text);
-      stationLon = double.tryParse(lonController.text);
-      if (stationLat == null || stationLon == null) {
-        _showMessage("Validation Failed", "Invalid latitude or longitude.");
-        return;
-      }
-    } else {
-      stationLat = double.tryParse(selectedStation!['lat']!);
-      stationLon = double.tryParse(selectedStation!['lon']!);
-    }
 
-    if (userLat == null || userLon == null) {
-      await _updateUserLocation();
+      if (widget.riverName.toLowerCase() != "godavari") {
+        if (stateController.text.isEmpty ||
+            siteController.text.isEmpty ||
+            latController.text.isEmpty ||
+            lonController.text.isEmpty) {
+          _showMessage("Validation Failed",
+              "Please enter state, site name, latitude, and longitude.");
+          return;
+        }
+        stationLat = double.tryParse(latController.text);
+        stationLon = double.tryParse(lonController.text);
+        if (stationLat == null || stationLon == null) {
+          _showMessage("Validation Failed", "Invalid latitude or longitude.");
+          return;
+        }
+      } else {
+        stationLat = double.tryParse(selectedStation!['lat']!);
+        stationLon = double.tryParse(selectedStation!['lon']!);
+      }
+
       if (userLat == null || userLon == null) {
-        _showMessage("Error", "Unable to get your current location.");
-        return;
+        await _updateUserLocation();
+        if (userLat == null || userLon == null) {
+          _showMessage("Error", "Unable to get your current location.");
+          return;
+        }
       }
-    }
 
-    distance =
-        Geolocator.distanceBetween(userLat!, userLon!, stationLat!, stationLon!);
+      distance = Geolocator.distanceBetween(
+          userLat!, userLon!, stationLat!, stationLon!);
 
-    if (distance! <= 50) {
-      _showMessage("Success",
-          "You are within ${distance!.toStringAsFixed(2)} meters of the station.");
-      Navigator.push(
-        context,
-        MaterialPageRoute(
-          builder: (context) => UploadReadingPage(
-            station: widget.riverName.toLowerCase() == "godavari"
-                ? selectedStation
-                : {
-                    "state": stateController.text,
-                    "site": siteController.text,
-                    "lat": "$stationLat",
-                    "lon": "$stationLon",
-                  },
+      if (distance! <= 50) {
+        _showMessage("Success",
+            "You are within ${distance!.toStringAsFixed(2)} meters of the station.");
+        Navigator.push(
+          context,
+          MaterialPageRoute(
+            builder: (context) => UploadReadingPage(
+              station: widget.riverName.toLowerCase() == "godavari"
+                  ? selectedStation
+                  : {
+                      "state": stateController.text,
+                      "site": siteController.text,
+                      "lat": "$stationLat",
+                      "lon": "$stationLon",
+                    },
+            ),
           ),
-        ),
-      );
-    } else {
-      _showMessage("Validation Failed",
-          "You are ${distance!.toStringAsFixed(2)} meters away from the station.\nMove closer to validate.");
+        );
+      } else {
+        _showMessage("Validation Failed",
+            "You are ${distance!.toStringAsFixed(2)} meters away from the station.\nMove closer to validate.");
+      }
+    } catch (e) {
+      _showMessage("Error", "Something went wrong: $e");
+    } finally {
+      setState(() => _isValidating = false); // ✅ Stop loader
     }
   }
 
@@ -198,14 +206,15 @@ class _RiverDetailScreenState extends State<RiverDetailScreen> {
       shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
       margin: const EdgeInsets.symmetric(vertical: 6),
       child: ListTile(
-        leading: const Icon(Icons.water, color: Colors.blue, size: 36),
+        leading: const Icon(Icons.dew_point, color: Colors.blue, size: 36),
         title: Text("${station['sNo']}. ${station['site']}",
             style: const TextStyle(fontWeight: FontWeight.bold)),
         subtitle: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             Text("District: ${station['district']}"),
-            Text("Type: ${station['type']}, Catchment: ${station['catchment']} km²"),
+            Text(
+                "Type: ${station['type']}, Catchment: ${station['catchment']} km²"),
             Text("River: ${station['river']}"),
             Text("Date Start: ${station['date']}"),
             Text("Lat: ${station['lat']}, Lon: ${station['lon']}"),
@@ -226,85 +235,102 @@ class _RiverDetailScreenState extends State<RiverDetailScreen> {
   @override
   Widget build(BuildContext context) {
     bool isGodavari = widget.riverName.toLowerCase() == "godavari";
+
     return Scaffold(
       appBar: AppBar(
         title: Text(widget.riverName),
         centerTitle: true,
         backgroundColor: primaryColor,
       ),
-      body: Padding(
-        padding: const EdgeInsets.all(16.0),
-        child: Column(
-          children: [
-            if (userLat != null && userLon != null)
-              Card(
-                color: Colors.blue[50],
-                margin: const EdgeInsets.only(bottom: 16),
-                child: ListTile(
-                  leading: const Icon(Icons.my_location, color: Colors.blue),
-                  title: Text(
-                      "Your Location: ${userLat!.toStringAsFixed(5)}, ${userLon!.toStringAsFixed(5)}"),
-                ),
-              ),
-            if (isGodavari)
-              customTextField(
-                  context: context,
-                  controller: searchController,
-                  hint: "Search by Station / District",
-                  icon: Icons.search),
-            const SizedBox(height: 16),
-            Expanded(
-              child: isGodavari
-                  ? ListView.builder(
-                      itemCount: filteredStations.length,
-                      itemBuilder: (context, index) =>
-                          _buildStationCard(filteredStations[index]),
-                    )
-                  : Center(
-                      child: SingleChildScrollView(
-                        child: Column(
-                          mainAxisSize: MainAxisSize.min,
-                          children: [
-                            const Icon(Icons.edit_location,
-                                size: 80, color: Colors.blue),
-                            const SizedBox(height: 16),
-                            customTextField(
-                                context: context,
-                                controller: stateController,
-                                hint: "State",
-                                icon: Icons.location_city),
-                            customTextField(
-                                context: context,
-                                controller: siteController,
-                                hint: "Site Name",
-                                icon: Icons.location_on),
-                            Row(
+      body: Stack(
+        children: [
+          Padding(
+            padding: const EdgeInsets.all(16.0),
+            child: Column(
+              children: [
+                if (userLat != null && userLon != null)
+                  Card(
+                    color: Colors.blue[50],
+                    margin: const EdgeInsets.only(bottom: 16),
+                    child: ListTile(
+                      leading: const Icon(Icons.my_location, color: Colors.blue),
+                      title: Text(
+                          "Your Location: ${userLat!.toStringAsFixed(5)}, ${userLon!.toStringAsFixed(5)}"),
+                    ),
+                  ),
+                if (isGodavari)
+                  customTextField(
+                      context: context,
+                      controller: searchController,
+                      hint: "Search by Station / District",
+                      icon: Icons.search),
+                const SizedBox(height: 16),
+                Expanded(
+                  child: isGodavari
+                      ? ListView.builder(
+                          itemCount: filteredStations.length,
+                          itemBuilder: (context, index) =>
+                              _buildStationCard(filteredStations[index]),
+                        )
+                      : Center(
+                          child: SingleChildScrollView(
+                            child: Column(
+                              mainAxisSize: MainAxisSize.min,
                               children: [
-                                Expanded(
-                                  child: customTextField(
-                                      context: context,
-                                      controller: latController,
-                                      hint: "Latitude",
-                                      icon: Icons.my_location),
-                                ),
-                                const SizedBox(width: 12),
-                                Expanded(
-                                  child: customTextField(
-                                      context: context,
-                                      controller: lonController,
-                                      hint: "Longitude",
-                                      icon: Icons.my_location),
+                                const Icon(Icons.edit_location,
+                                    size: 80, color: Colors.blue),
+                                const SizedBox(height: 16),
+                                customTextField(
+                                    context: context,
+                                    controller: stateController,
+                                    hint: "State",
+                                    icon: Icons.location_city),
+                                customTextField(
+                                    context: context,
+                                    controller: siteController,
+                                    hint: "Site Name",
+                                    icon: Icons.location_on),
+                                Row(
+                                  children: [
+                                    Expanded(
+                                      child: customTextField(
+                                          context: context,
+                                          controller: latController,
+                                          hint: "Latitude",
+                                          icon: Icons.my_location),
+                                    ),
+                                    const SizedBox(width: 12),
+                                    Expanded(
+                                      child: customTextField(
+                                          context: context,
+                                          controller: lonController,
+                                          hint: "Longitude",
+                                          icon: Icons.my_location),
+                                    ),
+                                  ],
                                 ),
                               ],
                             ),
-                          ],
+                          ),
                         ),
-                      ),
-                    ),
+                ),
+                customButton("Validate Location", _validateLocation),
+              ],
             ),
-            customButton("Validate Location", _validateLocation),
-          ],
-        ),
+          ),
+
+          // ✅ Center Loader Overlay
+          if (_isValidating)
+            Container(
+              color: Colors.black.withOpacity(0.3),
+              child: const Center(
+                child: CircularProgressIndicator(
+                  color: Colors.blue,
+                  strokeWidth: 5,
+                ),
+              ),
+            ),
+        ],
       ),
     );
   }
